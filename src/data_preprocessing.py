@@ -30,7 +30,14 @@ labelenc = LabelEncoder()
 onehotenc = OneHotEncoder()
 
 def loadRawData(datapath : str) -> pd.DataFrame:
-    """"""
+    """Load raw CSV data from a local path.
+
+    Args:
+        datapath: Path to a raw CSV file.
+
+    Returns:
+        A pandas DataFrame containing the raw dataset.
+    """
     try:
         df = pd.read_csv(datapath)
         logger.debug("Raw data loaded from %s", datapath)
@@ -45,6 +52,20 @@ def loadRawData(datapath : str) -> pd.DataFrame:
         raise
 
 def preprocessing(rawdata : pd.DataFrame, labelenc : LabelEncoder, onehotenc : OneHotEncoder) -> pd.DataFrame:
+    """Transform raw dataset features for model training.
+
+    This function encodes gender with a label encoder, one-hot encodes diet type,
+    maps activity level and health status to ordinal integers, and drops raw or
+    redundant columns.
+
+    Args:
+        rawdata: The raw dataset to transform.
+        labelenc: Fitted LabelEncoder for the Gender column.
+        onehotenc: Fitted OneHotEncoder for the Diet_Type column.
+
+    Returns:
+        A transformed pandas DataFrame ready for downstream modeling.
+    """
     try:
         logger.debug("Starting preprocessing pipeline. Initial shape: %s", rawdata.shape)
         data = rawdata.copy()
@@ -114,7 +135,13 @@ def preprocessing(rawdata : pd.DataFrame, labelenc : LabelEncoder, onehotenc : O
         raise
 
 def saveData(datadir : str, train_data : pd.DataFrame, test_data : pd.DataFrame) -> None:
-    """Saves Pre-Processed data."""
+    """Save processed train and test datasets to a directory.
+
+    Args:
+        datadir: Output directory path for processed CSV files.
+        train_data: Processed training DataFrame.
+        test_data: Processed testing DataFrame.
+    """
 
     try:
         os.makedirs(datadir,exist_ok=True)
@@ -132,6 +159,8 @@ def saveData(datadir : str, train_data : pd.DataFrame, test_data : pd.DataFrame)
         raise
 
 def main():
+    """Run the preprocessing pipeline on raw dataset files and save outputs."""
+
     try:
         rawtrainPath = './data/raw/train.csv'
         rawtestPath = './data/raw/test.csv'

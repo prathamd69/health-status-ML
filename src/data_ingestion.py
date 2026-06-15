@@ -59,7 +59,13 @@ def loadData(dataURL : str) -> pd.DataFrame:
         raise
 
 def saveData(data : pd.DataFrame, datadir : str, testSplit : float) -> None:
-    """Saves raw data."""
+    """Split raw data and save it to disk.
+
+    Args:
+        data: DataFrame containing the full dataset.
+        datadir: Directory path where train/test CSV files should be written.
+        testSplit: Fraction of the data to reserve for testing.
+    """
 
     try:
         os.makedirs(datadir,exist_ok=True)
@@ -80,6 +86,8 @@ def saveData(data : pd.DataFrame, datadir : str, testSplit : float) -> None:
     
 
 def main():
+    """Run the ingestion pipeline to download and save raw training and test data."""
+
     try:
         dataURL = 'https://raw.githubusercontent.com/prathamd69/datasets/refs/heads/main/healthdataset.csv'
         df = loadData(dataURL=dataURL)

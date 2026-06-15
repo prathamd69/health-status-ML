@@ -30,7 +30,14 @@ scaler = StandardScaler()
 scaler.set_output(transform="pandas")
 
 def loadRawData(datapath : str) -> pd.DataFrame:
-    """"""
+    """Load a processed CSV file into a DataFrame.
+
+    Args:
+        datapath: Path to a CSV file containing processed data.
+
+    Returns:
+        A pandas DataFrame loaded from the given file.
+    """
     try:
         df = pd.read_csv(datapath)
         logger.debug("Raw data loaded from %s", datapath)
@@ -45,6 +52,18 @@ def loadRawData(datapath : str) -> pd.DataFrame:
         raise
 
 def features(data : pd.DataFrame) -> pd.DataFrame:
+    """Create engineered features and remove redundant columns.
+
+    This function computes a daily calorie index, drops calorie intake/requirement
+    source columns, and removes low-correlation or redundant features such as
+    diet type encodings, gender, and water intake.
+
+    Args:
+        data: A pandas DataFrame with processed dataset features.
+
+    Returns:
+        A DataFrame containing the final selected feature set.
+    """
     try:
         # Reducing Daily Calorie Intake and Requirement columns into one Daily Calorie Index
         data['daily_calorie_index'] = data['Daily_Calorie_Consumed'] - data['Daily_Calorie_Requirement']
@@ -67,6 +86,17 @@ def features(data : pd.DataFrame) -> pd.DataFrame:
         raise
     
 def scalingandsaving(train_data : pd.DataFrame, test_data : pd.DataFrame, scaler : StandardScaler, datadir : str) -> None:
+    """Scale numeric features and save final train/test datasets.
+
+    This function applies a StandardScaler to numeric columns while preserving
+    excluded identifier or target columns, then writes the final datasets to disk.
+
+    Args:
+        train_data: Final training DataFrame before scaling.
+        test_data: Final testing DataFrame before scaling.
+        scaler: A fitted or unfitted StandardScaler instance.
+        datadir: Output directory for the scaled CSV files.
+    """
     try:
         cols_to_exclude = ['target', 'Activity_Level', 'Gender']
 
@@ -98,6 +128,8 @@ def scalingandsaving(train_data : pd.DataFrame, test_data : pd.DataFrame, scaler
         raise
     
 def main():
+    """Run the feature engineering pipeline and save final scaled datasets."""
+
     try:
         processedtrainPath = './data/processed/train.csv'
         processedtestPath = './data/processed/test.csv'
