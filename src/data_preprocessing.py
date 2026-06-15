@@ -59,7 +59,6 @@ def preprocessing(rawdata : pd.DataFrame, labelenc : LabelEncoder, onehotenc : O
         else:
             logger.warning("'Gender' column not found in input data. Skipping LabelEncoder.")
 
-        # 2. One-Hot Encode Diet_Type safely
         if 'Diet_Type' in data.columns:
             diet_encoded = onehotenc.transform(data[['Diet_Type']])
             
@@ -91,7 +90,7 @@ def preprocessing(rawdata : pd.DataFrame, labelenc : LabelEncoder, onehotenc : O
             logger.warning("'Activity_Level' column not found in input data.")
 
         healthMapping = {
-            'underweight': 0, 'fit': 1, 'overweight': 2, 'obese': 3
+            'Underweight': 0, 'Healthy': 1, 'Overweight': 2, 'Obese': 3
         }
         if 'Health_Status' in data.columns:
             data['target'] = data['Health_Status'].map(healthMapping)
