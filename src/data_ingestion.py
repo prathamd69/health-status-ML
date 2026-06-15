@@ -58,10 +58,33 @@ def loadData(dataURL : str) -> pd.DataFrame:
         logger.error('Unexpected error while loading the data: %s', e)
         raise
 
+def saveRawData(data : pd.DataFrame) -> None:
+    """Saves raw data."""
+
+    try:
+        rawdir = 'rawdata'
+        os.makedirs(rawdir,exist_ok=True)
+
+        rawdataPath = os.path.join(rawdir,'data.csv')
+        data.to_csv(rawdataPath, index=False)
+        logger.debug("Raw data saved to %s", rawdataPath)
+    
+    except Exception as e:
+        logger.error("Unexpected error while saving raw data : %s", e)
+        raise
+    
+
 def main():
-    dataURL = input("Enter the URL - ")
-    df = loadData(dataURL=dataURL)
-    print(df.head())
+    try:
+        dataURL = 'https://raw.githubusercontent.com/prathamd69/datasets/main/dataset.csv'
+        df = loadData(dataURL=dataURL)
+        print(df.head())
+        saveRawData(df)
+
+    except Exception as e:
+        logger.error("Unexpected error, data ingestion failed : %s",e)
+        raise
+
 
 if __name__ == "__main__":
     main()
