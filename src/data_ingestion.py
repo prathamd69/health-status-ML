@@ -4,6 +4,7 @@ import logging
 import yaml
 import requests
 from io import StringIO
+from sklearn.model_selection import train_test_split
 
 # Logging Setup and Configuration
 
@@ -57,16 +58,21 @@ def loadData(dataURL : str) -> pd.DataFrame:
         logger.error('Unexpected error while loading the data: %s', e)
         raise
 
-def saveRawData(data : pd.DataFrame) -> None:
+def saveData(data : pd.DataFrame, datadir : str, testSplit : float) -> None:
     """Saves raw data."""
 
     try:
-        rawdir = 'rawdata'
-        os.makedirs(rawdir,exist_ok=True)
+        os.makedirs(datadir,exist_ok=True)
 
-        rawdataPath = os.path.join(rawdir,'data.csv')
-        data.to_csv(rawdataPath, index=False)
-        logger.debug("Raw data saved to %s", rawdataPath)
+        train_data, test_data = train_test_split(data, test_size=testSplit, random_state=24)
+
+        traindataPath = os.path.join(datadir,'train.csv')
+        testdataPath = os.path.join(datadir,'test.csv')
+
+        train_data.to_csv(traindataPath, index=False)
+        test_data.to_csv(testdataPath, index=False)
+        logger.debug("Training data saved to %s", traindataPath)
+        logger.debug("Testing data saved to %s", testdataPath)
     
     except Exception as e:
         logger.error("Unexpected error while saving raw data : %s", e)
@@ -77,8 +83,9 @@ def main():
     try:
         dataURL = 'https://raw.githubusercontent.com/prathamd69/datasets/refs/heads/main/healthdataset.csv'
         df = loadData(dataURL=dataURL)
-        print(df.head())
-        saveRawData(df)
+        testSplit = 0.2
+        savedir = 'data/raw'
+        saveData(data=df, datadir=savedir, testSplit=testSplit)
 
     except Exception as e:
         logger.error("Unexpected error, data ingestion failed : %s",e)
