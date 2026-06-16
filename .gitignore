@@ -222,3 +222,8 @@ data/
 
 #Models
 models/
+reports/
+
+
+# Ignore DVClive data outputs
+dvclive/plots/

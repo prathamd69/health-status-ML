@@ -11,6 +11,7 @@ from sklearn.metrics import (
     f1_score,
     roc_auc_score
 )
+from dvclive.live import Live
 
 # Logging Setup and Configuration
 
@@ -97,12 +98,20 @@ def evaluate_model(model, dataPath : str) -> dict:
         )
 
         metrics_dict = {
-            'accuracy': accuracy,
-            'precision': precision,
-            'recall': recall,
-            'f1': f1,
-            'auc': auc,
+            'accuracy': float(accuracy),
+            'precision': float(precision),
+            'recall': float(recall),
+            'f1': float(f1),
+            'auc': float(auc),
         }
+
+        with Live(save_dvc_exp=True) as live:
+            live.log_metric('accuracy', metrics_dict['accuracy'])
+            live.log_metric('precision', metrics_dict['precision'])
+            live.log_metric('recall', metrics_dict['recall'])
+            live.log_metric('f1', metrics_dict['f1'])
+            live.log_metric('auc', metrics_dict['auc'])
+            
         logger.debug('Model evaluation metrics calculated')
         return metrics_dict
     
