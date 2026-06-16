@@ -69,7 +69,7 @@ def model_building(trainpath : str, max_iter: int) -> LogisticRegression:
         )
 
         lr.fit(X_train, y_train)
-        logger.debug('Model training completed')
+        logger.info('Model training completed')
 
         return lr
 
@@ -81,7 +81,7 @@ def model_building(trainpath : str, max_iter: int) -> LogisticRegression:
         logger.error("Unexpected error during model building: %s", e)
         raise
 
-def save_model(model, file_path: str) -> None:
+def save_model(model, filePath: str) -> None:
     """
     Save the trained model to a file.
     
@@ -89,11 +89,10 @@ def save_model(model, file_path: str) -> None:
     :param file_path: Path to save the model file
     """
     try:
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
         
-        with open(file_path, 'wb') as file:
+        with open(filePath, 'wb') as file:
             pickle.dump(model, file)
-        logger.debug('Model saved to %s', file_path)
+        logger.info('Model saved to %s', filePath)
 
     except FileNotFoundError as e:
         logger.error('File path not found: %s', e)
@@ -105,13 +104,16 @@ def save_model(model, file_path: str) -> None:
 
 def main():
     try:
-        trainpath = './data/processed/train_tfidf.csv'
+        trainpath = './data/final/train.csv'
         max_iter = 100
 
         lrmodel = model_building(trainpath, max_iter)
         
-        model_save_path = 'models/logisticregressionModel.pkl'
-        save_model(lrmodel, model_save_path)
+        modelDir = 'models'
+        os.makedirs(modelDir, exist_ok=True)
+        modelPath = os.path.join(modelDir,'logisticregressionModel.pkl')
+ 
+        save_model(lrmodel, modelPath)
 
     except Exception as e:
         logger.error('Failed to complete the model building process: %s', e)

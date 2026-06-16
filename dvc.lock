@@ -41,11 +41,44 @@ stages:
       nfiles: 2
     - path: src/feature_engg.py
       hash: md5
-      md5: 7b7c76e1a12a452d5e2fb612f48536e7
-      size: 5701
+      md5: e014cd020caa5f88f03b7a75e4e0d4c0
+      size: 5691
     outs:
     - path: data/final
       hash: md5
       md5: 6a464211acfbfebef14a299c034d6a8a.dir
       size: 739273
       nfiles: 2
+  model_building:
+    cmd: python src/model_training.py
+    deps:
+    - path: data/final
+      hash: md5
+      md5: 6a464211acfbfebef14a299c034d6a8a.dir
+      size: 739273
+      nfiles: 2
+    - path: src/model_training.py
+      hash: md5
+      md5: c1c6526692c8dbc54af81b5fba59fb55
+      size: 3520
+    outs:
+    - path: models/logisticregressionModel.pkl
+      hash: md5
+      md5: ba84c931fa40975b7fd73fd7fe538595
+      size: 1165
+  model_evaluation:
+    cmd: python src/model_evaluation.py
+    deps:
+    - path: models/logisticregressionModel.pkl
+      hash: md5
+      md5: ba84c931fa40975b7fd73fd7fe538595
+      size: 1165
+    - path: src/model_evaluation.py
+      hash: md5
+      md5: 9c10b5b0fba6499b449d4fabc8f7a98d
+      size: 4141
+    outs:
+    - path: reports/metrics.json
+      hash: md5
+      md5: 66e7634e76b8d5e693208602742059b9
+      size: 148
