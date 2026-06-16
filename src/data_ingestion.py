@@ -28,6 +28,22 @@ fileHandler.setFormatter(formatter)
 logger.addHandler(consoleHandler)
 logger.addHandler(fileHandler)
 
+def loadParams(paramsPath: str) -> dict:
+    """Load parameters from a YAML file."""
+    try:
+        with open(paramsPath, 'r') as file:
+            params = yaml.safe_load(file)
+        logger.debug('Parameters retrieved from %s', paramsPath)
+        return params
+    except FileNotFoundError:
+        logger.error('File not found: %s', paramsPath)
+        raise
+    except yaml.YAMLError as e:
+        logger.error('YAML error: %s', e)
+        raise
+    except Exception as e:
+        logger.error('Unexpected error: %s', e)
+        raise
 
 def loadData(dataURL : str) -> pd.DataFrame:
     """
@@ -89,10 +105,14 @@ def main():
     """Run the ingestion pipeline to download and save raw training and test data."""
 
     try:
-        dataURL = 'https://raw.githubusercontent.com/prathamd69/datasets/refs/heads/main/healthdataset.csv'
+        params = loadParams(paramsPath='params.yaml')
+        dataURL = params['data_ingestion']['dataURL']
+        testSplit = params['data_ingestion']['testSplit']
+
         df = loadData(dataURL=dataURL)
-        testSplit = 0.2
+        
         savedir = 'data/raw'
+
         saveData(data=df, datadir=savedir, testSplit=testSplit)
 
     except Exception as e:

@@ -3,6 +3,7 @@ import logging
 import os
 import pickle
 from sklearn.linear_model import LogisticRegression
+import yaml
 
 # Logging Setup and Configuration
 
@@ -26,6 +27,22 @@ fileHandler.setFormatter(formatter)
 logger.addHandler(consoleHandler)
 logger.addHandler(fileHandler)
 
+def loadParams(paramsPath: str) -> dict:
+    """Load parameters from a YAML file."""
+    try:
+        with open(paramsPath, 'r') as file:
+            params = yaml.safe_load(file)
+        logger.debug('Parameters retrieved from %s', paramsPath)
+        return params
+    except FileNotFoundError:
+        logger.error('File not found: %s', paramsPath)
+        raise
+    except yaml.YAMLError as e:
+        logger.error('YAML error: %s', e)
+        raise
+    except Exception as e:
+        logger.error('Unexpected error: %s', e)
+        raise
 
 def loadRawData(datapath : str) -> pd.DataFrame:
     """Load a processed CSV file into a DataFrame.
@@ -105,9 +122,10 @@ def save_model(model, filePath: str) -> None:
 def main():
     try:
         trainpath = './data/final/train.csv'
-        max_iter = 100
+        params = loadParams(paramsPath='params.yaml')
+        max_iters = params['model_training']['max_iters']
 
-        lrmodel = model_building(trainpath, max_iter)
+        lrmodel = model_building(trainpath, max_iters)
         
         modelDir = 'models'
         os.makedirs(modelDir, exist_ok=True)

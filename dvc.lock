@@ -5,8 +5,13 @@ stages:
     deps:
     - path: src/data_ingestion.py
       hash: md5
-      md5: 0b7f80ac74963dc0405ad10f850768f0
-      size: 3287
+      md5: 08b1a2f901edd694615a08169f209545
+      size: 3895
+    params:
+      params.yaml:
+        data_ingestion.dataURL: 
+          https://raw.githubusercontent.com/prathamd69/datasets/refs/heads/main/healthdataset.csv
+        data_ingestion.testSplit: 0.2
     outs:
     - path: data/raw
       hash: md5
@@ -82,3 +87,23 @@ stages:
       hash: md5
       md5: 66e7634e76b8d5e693208602742059b9
       size: 148
+  model_training:
+    cmd: python src/model_training.py
+    deps:
+    - path: data/final
+      hash: md5
+      md5: 6a464211acfbfebef14a299c034d6a8a.dir
+      size: 739273
+      nfiles: 2
+    - path: src/model_training.py
+      hash: md5
+      md5: 5fc0f44e2340c7f4ec1e41b444838790
+      size: 4183
+    params:
+      params.yaml:
+        model_training.max_iters: 100
+    outs:
+    - path: models/logisticregressionModel.pkl
+      hash: md5
+      md5: ba84c931fa40975b7fd73fd7fe538595
+      size: 1165

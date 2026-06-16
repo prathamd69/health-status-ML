@@ -1,0 +1,6 @@
+data_ingestion:
+  testSplit : 0.20
+  dataURL : 'https://raw.githubusercontent.com/prathamd69/datasets/refs/heads/main/healthdataset.csv'
+
+model_training:
+  max_iters : 100

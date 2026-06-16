@@ -3,8 +3,9 @@ stages:
     cmd: python src/data_ingestion.py
     deps:
     - src/data_ingestion.py
-    # params:
-    # - data_ingestion.test_size
+    params:
+    - data_ingestion.testSplit
+    - data_ingestion.dataURL
     outs:
     - data/raw
   data_preprocessing:
@@ -19,18 +20,15 @@ stages:
     deps:
     - data/processed
     - src/feature_engg.py
-    # params:
-    # - feature_engineering.max_features
     outs:
     - data/final
-  model_building:
+  model_training:
     cmd: python src/model_training.py
     deps:
     - data/final
     - src/model_training.py
-    # params:
-    # - model_building.n_estimators
-    # - model_building.random_state
+    params:
+    - model_training.max_iters
     outs:
     - models/logisticregressionModel.pkl
   model_evaluation:
@@ -40,6 +38,7 @@ stages:
     - src/model_evaluation.py
     metrics:
     - reports/metrics.json
+
 # params:
 # - dvclive/params.yaml
 # metrics:
