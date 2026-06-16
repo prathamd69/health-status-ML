@@ -98,7 +98,7 @@ def scalingandsaving(train_data : pd.DataFrame, test_data : pd.DataFrame, scaler
         datadir: Output directory for the scaled CSV files.
     """
     try:
-        cols_to_exclude = ['target', 'Activity_Level', 'Gender']
+        cols_to_exclude = ['target', 'Activity_Level']
 
         exclude_train = [col for col in cols_to_exclude if col in train_data.columns]
         exclude_test = [col for col in cols_to_exclude if col in test_data.columns]
